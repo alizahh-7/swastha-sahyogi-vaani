@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, MicOff, Volume2, Send, Heart, Stethoscope } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -106,38 +107,33 @@ const SwasthaSaarthi = () => {
   };
 
   const callLyzrAPI = async (userInput: string) => {
-    try {
-      console.log('Calling Lyzr API with input:', userInput);
-      
-      const response = await fetch('https://agent-prod.studio.lyzr.ai/v3/inference/chat/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': 'sk-default-7UtAJqDCIh2oHWoqNpnvKAfmZKZBkT4G'
-        },
-        body: JSON.stringify({
-          user_id: "user_health_assistant",
-          agent_id: "683bd57b3b7c57f1745ce939",
-          session_id: `session_${Date.now()}`,
-          message: userInput
-        }),
-      });
+    console.log('Calling Lyzr API with input:', userInput);
+    
+    const response = await fetch('https://agent-prod.studio.lyzr.ai/v3/inference/chat/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': 'sk-default-7UtAJqDCIh2oHWoqNpnvKAfmZKZBkT4G'
+      },
+      body: JSON.stringify({
+        user_id: "user_health_assistant",
+        agent_id: "683bd57b3b7c57f1745ce939",
+        session_id: `session_${Date.now()}`,
+        message: userInput
+      }),
+    });
 
-      if (!response.ok) {
-        throw new Error(`API call failed: ${response.status}`);
-      }
+    if (!response.ok) {
+      throw new Error(`API call failed with status: ${response.status}`);
+    }
 
-      const data = await response.json();
-      console.log('Lyzr API response:', data);
-      
-      if (data.response) {
-        return data.response;
-      } else {
-        throw new Error('No response from API');
-      }
-    } catch (error) {
-      console.error('Error calling Lyzr API:', error);
-      throw error;
+    const data = await response.json();
+    console.log('Lyzr API response:', data);
+    
+    if (data && data.response) {
+      return data.response;
+    } else {
+      throw new Error('No response found in API response');
     }
   };
 
@@ -157,6 +153,7 @@ const SwasthaSaarthi = () => {
 
     try {
       const aiResponse = await callLyzrAPI(messageText);
+      console.log('AI Response received:', aiResponse);
       
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -171,7 +168,7 @@ const SwasthaSaarthi = () => {
       speakText(aiResponse);
       
     } catch (error) {
-      console.error('Error getting AI response:', error);
+      console.error('Error in handleSendMessage:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: 'Sorry, I am having trouble helping you right now. Please try again or visit a nearby doctor.',
@@ -180,7 +177,7 @@ const SwasthaSaarthi = () => {
       };
       setMessages(prev => [...prev, errorMessage]);
       speakText(errorMessage.text);
-      toast.error('Connection error');
+      toast.error('Connection error - please try again');
     } finally {
       setIsLoading(false);
     }
@@ -205,7 +202,7 @@ const SwasthaSaarthi = () => {
               <Heart className="h-8 w-8 text-red-300" />
             </CardTitle>
             <p className="text-green-100 mt-2">
-              Your Health Assistant | आपका स्वास्थ्य सहायक
+              Your AI Health Assistant
             </p>
           </CardHeader>
         </Card>
@@ -282,7 +279,12 @@ const SwasthaSaarthi = () => {
               <Textarea
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                onKeyPress={handleKeyPress}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
                 placeholder="Tell me about your symptoms or press the mic button to speak..."
                 className="resize-none border-2 border-gray-200 focus:border-green-500 rounded-lg"
                 rows={3}
