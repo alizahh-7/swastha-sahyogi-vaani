@@ -44,7 +44,7 @@ const SwasthaSaarthi = () => {
       recognitionRef.current.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
-        toast.error('माइक्रोफोन में समस्या है। कृपया दोबारा कोशिश करें।');
+        toast.error('Microphone error. Please try again.');
       };
 
       recognitionRef.current.onend = () => {
@@ -57,7 +57,7 @@ const SwasthaSaarthi = () => {
     if (recognitionRef.current && !isListening) {
       setIsListening(true);
       recognitionRef.current.start();
-      toast.info('बोलिए... मैं सुन रहा हूँ');
+      toast.info('Listening... Please speak');
     }
   };
 
@@ -175,13 +175,13 @@ const SwasthaSaarthi = () => {
       console.error('Error getting AI response:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'क्षमा करें, मुझे आपकी मदद करने में समस्या हो रही है। कृपया दोबारा कोशिश करें या नजदीकी डॉक्टर से मिलें।',
+        text: 'Sorry, I am having trouble helping you right now. Please try again or visit a nearby doctor.',
         isUser: false,
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, errorMessage]);
       speakText(errorMessage.text);
-      toast.error('कनेक्शन में समस्या है');
+      toast.error('Connection error');
     } finally {
       setIsLoading(false);
     }
@@ -206,7 +206,7 @@ const SwasthaSaarthi = () => {
               <Heart className="h-8 w-8 text-red-300" />
             </CardTitle>
             <p className="text-green-100 mt-2">
-              आपका स्वास्थ्य सहायक | Your Health Assistant
+              Your Health Assistant | आपका स्वास्थ्य सहायक
             </p>
           </CardHeader>
         </Card>
@@ -217,15 +217,15 @@ const SwasthaSaarthi = () => {
             <CardContent className="p-6 text-center">
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-gray-800">
-                  नमस्ते! मैं आपका स्वास्थ्य सहायक हूँ
+                  Hello! I'm your health assistant
                 </h3>
                 <p className="text-gray-600">
-                  आप अपने लक्षणों के बारे में बता सकते हैं। मैं हिंदी, अंग्रेजी, तेलुगू, तमिल और बंगाली में आपकी मदद कर सकता हूँ।
+                  You can tell me about your symptoms. I can help you in Hindi, English, Telugu, Tamil, and Bengali.
                 </p>
                 <div className="flex justify-center gap-4 text-sm text-gray-500">
-                  <span>🎙️ आवाज़ से बोलें</span>
-                  <span>💬 टाइप करें</span>
-                  <span>🔊 सुनें</span>
+                  <span>🎙️ Speak with voice</span>
+                  <span>💬 Type text</span>
+                  <span>🔊 Listen to response</span>
                 </div>
               </div>
             </CardContent>
@@ -250,7 +250,7 @@ const SwasthaSaarthi = () => {
                   >
                     <p className="text-sm leading-relaxed">{message.text}</p>
                     <p className={`text-xs mt-2 ${message.isUser ? 'text-blue-100' : 'text-green-100'}`}>
-                      {message.timestamp.toLocaleTimeString('hi-IN', { 
+                      {message.timestamp.toLocaleTimeString('en-IN', { 
                         hour: '2-digit', 
                         minute: '2-digit' 
                       })}
@@ -267,7 +267,7 @@ const SwasthaSaarthi = () => {
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                       </div>
-                      <span className="text-sm text-gray-600">सोच रहा हूँ...</span>
+                      <span className="text-sm text-gray-600">Thinking...</span>
                     </div>
                   </div>
                 </div>
@@ -284,7 +284,7 @@ const SwasthaSaarthi = () => {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="अपने लक्षणों के बारे में बताएं या माइक बटन दबाकर बोलें..."
+                placeholder="Tell me about your symptoms or press the mic button to speak..."
                 className="resize-none border-2 border-gray-200 focus:border-green-500 rounded-lg"
                 rows={3}
               />
@@ -303,12 +303,12 @@ const SwasthaSaarthi = () => {
                   {isListening ? (
                     <>
                       <MicOff className="w-5 h-5 mr-2" />
-                      रुकें
+                      Stop
                     </>
                   ) : (
                     <>
                       <Mic className="w-5 h-5 mr-2" />
-                      बोलें
+                      Speak
                     </>
                   )}
                 </Button>
@@ -320,7 +320,7 @@ const SwasthaSaarthi = () => {
                   className="px-6 py-3 rounded-full font-semibold bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:scale-105 transition-all duration-300"
                 >
                   <Send className="w-5 h-5 mr-2" />
-                  भेजें
+                  Send
                 </Button>
 
                 {/* Speaker Button */}
@@ -344,7 +344,7 @@ const SwasthaSaarthi = () => {
                   }`}
                 >
                   <Volume2 className="w-5 h-5 mr-2" />
-                  {isSpeaking ? 'रुकें' : 'सुनें'}
+                  {isSpeaking ? 'Stop' : 'Listen'}
                 </Button>
               </div>
             </div>
@@ -353,7 +353,7 @@ const SwasthaSaarthi = () => {
 
         {/* Footer */}
         <div className="text-center mt-6 text-sm text-gray-600">
-          <p>⚠️ यह केवल प्राथमिक सलाह है। गंभीर समस्या होने पर तुरंत डॉक्टर से मिलें।</p>
+          <p>⚠️ This is only preliminary advice. Please consult a doctor immediately for serious problems.</p>
         </div>
       </div>
     </div>
