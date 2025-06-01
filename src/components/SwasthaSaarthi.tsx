@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, MicOff, Volume2, Send, Heart, Stethoscope } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -114,11 +113,11 @@ const SwasthaSaarthi = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': 'lyzr-key-018d6e61acb543b38cc08b05a8c91e7d'
+          'x-api-key': 'sk-default-7UtAJqDCIh2oHWoqNpnvKAfmZKZBkT4G'
         },
         body: JSON.stringify({
           user_id: "user_health_assistant",
-          agent_id: "67614bd4e4b0c6862e32c7e3",
+          agent_id: "683bd57b3b7c57f1745ce939",
           session_id: `session_${Date.now()}`,
           message: userInput
         }),
